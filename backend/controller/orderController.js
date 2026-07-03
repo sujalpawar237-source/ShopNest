@@ -1,5 +1,5 @@
 const Order = require("../model/Order.js");
-const SendEmail = require("../utils/sendEmail.js");
+const SendEmail = require("../utils/SendEmail.js");
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -25,12 +25,15 @@ const createOrder = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-}; 
+};
 
 // Get My Orders
 const myOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).populate("items.productId", "name price");
+    const orders = await Order.find({ user: req.user._id }).populate(
+      "items.productId",
+      "name price",
+    );
     res.status(200).json({ orders });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -54,13 +57,15 @@ const updateOrderStatus = async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
-    } 
+    }
     order.status = status;
     await order.save();
-    res.status(200).json({ message: "Order status updated successfully", order });
+    res
+      .status(200)
+      .json({ message: "Order status updated successfully", order });
   } catch (error) {
     res.status(400).json({ message: error.message });
-  } 
+  }
 };
 
 module.exports = {
