@@ -1,7 +1,7 @@
 const User = require("../model/User.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const sendEmail = require("../utils/sendEmail.js");
+const sendEmail = require("../utils/SendEmail.js");
 
 const genrateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -76,7 +76,6 @@ const loginUser = async (req, res) => {
         email: user.email,
         role: user.role,
         token: genrateToken(user._id),
-        
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });
@@ -112,14 +111,10 @@ const emailVerification = async (req, res) => {
 
       user.verified = true;
       await user.save();
-      
+
       const message = `Dear ${user.name},\n\nYour email has been successfully verified. You can now log in to your account and enjoy our services.\n\nBest regards,\nE-commerce Team`;
-      
-      await sendEmail(
-        email,
-        "Email Verified Successfully",
-        message,
-      );
+
+      await sendEmail(email, "Email Verified Successfully", message);
 
       return res.json({
         message: "Email verified successfully",
